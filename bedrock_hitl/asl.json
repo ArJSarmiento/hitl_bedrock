@@ -1,0 +1,138 @@
+{
+  "Comment": "State machine to ask for human permission before sending approval notification",
+  "StartAt": "Check if Request Adheres to Policy",
+  "States": {
+    "Check if Request Adheres to Policy": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::bedrock:invokeModel",
+      "Next": "Convert Result to Schema",
+      "Parameters": {
+        "ModelId": "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-v2:1",
+        "Body": {
+          "anthropic_version": "bedrock-2023-05-31",
+          "max_tokens": 200,
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                {
+                "type": "text",
+                "text.$": "States.Format('Return a JSON object with the keys \"results\" and \"explanation\". \"results\" should be a boolean and \"explanation\" should be a string. Respond only with the JSON object. Dont respond with Markdown. Context: {} Input: {}', $.context, $.input)"
+                }
+              ]
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Here is my Purely JSON Response that is not in Markdown:"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "Convert Result to Schema": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:439420061823:function:bedrock-hitl-dev-ConvertResponseToSchemaBF580A5E-ar20v4aVCibP",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "$.ConvertResultToSchema"
+      },
+      "Next": "Choice for Evaluator Result"
+    },
+    "Choice for Evaluator Result": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.results",
+          "BooleanEquals": false,
+          "Next": "Prepare Approved Event Data"
+        },
+        {
+          "Variable": "$.results",
+          "BooleanEquals": true,
+          "Next": "Wait for Human Response"
+        }
+      ],
+      "Default": "Wait for Human Response",
+      "OutputPath": "$.results"
+    },
+    "Prepare Approved Event Data": {
+      "Type": "Pass",
+      "Parameters": {
+        "request_id.$": "$.request_id",
+        "status": "Approved"
+      },
+      "Next": "Send Request Approved Event"
+    },
+    "Wait for Human Response": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:REGION:ACCOUNT_ID:function:WAIT_FOR_RESPONSE_FUNCTION",
+        "Payload": {
+          "input.$": "$"
+        }
+      },
+      "Next": "Choice if Approved"
+    },
+    "Choice if Approved": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.approval_status",
+          "StringEquals": "Approved",
+          "Next": "Prepare Approved Event Data"
+        }
+      ],
+      "Default": "Prepare Denied Event Data"
+    },
+    "Prepare Denied Event Data": {
+      "Type": "Pass",
+      "Parameters": {
+        "request_id.$": "$.request_id",
+        "status": "Denied"
+      },
+      "Next": "Send Request Denied Event"
+    },
+    "Send Request Approved Event": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::events:putEvents",
+      "Parameters": {
+        "Entries": [
+          {
+            "Detail": {
+              "request_id.$": "$.request_id",
+              "status.$": "$.status"
+            },
+            "EventBusName": "default",
+            "Source": "app.request",
+            "DetailType": "Request Status Change"
+          }
+        ]
+      },
+      "End": true
+    },
+    "Send Request Denied Event": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::events:putEvents",
+      "Parameters": {
+        "Entries": [
+          {
+            "Detail": {
+              "request_id.$": "$.request_id",
+              "status.$": "$.status"
+            },
+            "EventBusName": "default",
+            "Source": "app.request",
+            "DetailType": "Request Status Change"
+          }
+        ]
+      },
+      "End": true
+    }
+  }
+}
