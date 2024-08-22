@@ -16,8 +16,8 @@
               "role": "user",
               "content": [
                 {
-                "type": "text",
-                "text.$": "States.Format('Return a JSON object with the keys \"results\" and \"explanation\". \"results\" should be a boolean and \"explanation\" should be a string. Respond only with the JSON object. Dont respond with Markdown. Context: {} Input: {}', $.context, $.input)"
+                  "type": "text",
+                  "text.$": "States.Format('Return a JSON object with the keys \"results\" and \"explanation\". \"results\" should be a boolean and \"explanation\" should be a string. Respond only with the JSON object. Dont respond with Markdown. Context: {} Input: {}', $.context, $.input)"
                 }
               ]
             },
@@ -49,7 +49,7 @@
         {
           "Variable": "$.results",
           "BooleanEquals": false,
-          "Next": "Prepare Approved Event Data"
+          "Next": "Prepare Deny Event Data"
         },
         {
           "Variable": "$.results",
@@ -57,16 +57,14 @@
           "Next": "Wait for Human Response"
         }
       ],
-      "Default": "Wait for Human Response",
-      "OutputPath": "$.results"
+      "Default": "Wait for Human Response"
     },
-    "Prepare Approved Event Data": {
+    "Prepare Deny Event Data": {
       "Type": "Pass",
       "Parameters": {
-        "request_id.$": "$.request_id",
-        "status": "Approved"
+        "status": "Denied"
       },
-      "Next": "Send Request Approved Event"
+      "Next": "Send Request Deny Event"
     },
     "Wait for Human Response": {
       "Type": "Task",
@@ -85,27 +83,26 @@
         {
           "Variable": "$.approval_status",
           "StringEquals": "Approved",
-          "Next": "Prepare Approved Event Data"
+          "Next": "Prepare Deny Event Data"
         }
       ],
-      "Default": "Prepare Denied Event Data"
+      "Default": "Prepare Approve Event Data"
     },
-    "Prepare Denied Event Data": {
+    "Prepare Approve Event Data": {
       "Type": "Pass",
       "Parameters": {
-        "request_id.$": "$.request_id",
-        "status": "Denied"
+        "status": "Approved"
       },
-      "Next": "Send Request Denied Event"
+      "Next": "Send Request Approve Event"
     },
-    "Send Request Approved Event": {
+    "Send Request Deny Event": {
       "Type": "Task",
       "Resource": "arn:aws:states:::events:putEvents",
       "Parameters": {
         "Entries": [
           {
             "Detail": {
-              "request_id.$": "$.request_id",
+              "request_id.$": "$$.Execution.Input.request_id",
               "status.$": "$.status"
             },
             "EventBusName": "default",
@@ -116,14 +113,14 @@
       },
       "End": true
     },
-    "Send Request Denied Event": {
+    "Send Request Approve Event": {
       "Type": "Task",
       "Resource": "arn:aws:states:::events:putEvents",
       "Parameters": {
         "Entries": [
           {
             "Detail": {
-              "request_id.$": "$.request_id",
+              "request_id.$": "$$.Execution.Input.request_id",
               "status.$": "$.status"
             },
             "EventBusName": "default",
