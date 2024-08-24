@@ -11,6 +11,7 @@ readme = "README.md"
   aws-cdk-lib = "^2.1.0"
   constructs = "^10.0.5"
   python = "^3.8"
+  aws-solutions-constructs-aws-apigateway-lambda = "^2.65.0"
 
 [tool.poetry.group.dev.dependencies]
 projen = "0.85.0"

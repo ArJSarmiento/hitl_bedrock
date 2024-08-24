@@ -72,7 +72,8 @@
       "Parameters": {
         "FunctionName": "arn:aws:lambda:REGION:ACCOUNT_ID:function:WAIT_FOR_RESPONSE_FUNCTION",
         "Payload": {
-          "input.$": "$"
+          "input.$": "$",
+          "token.$": "$$.Task.Token"
         }
       },
       "Next": "Choice if Approved"

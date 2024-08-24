@@ -68,14 +68,32 @@ publication = ">=0.0.3"
 typeguard = ">=2.13.3,<2.14.0"
 
 [[package]]
+name = "aws-cdk-integ-tests-alpha"
+version = "2.150.0a0"
+description = "CDK Integration Testing Constructs"
+optional = false
+python-versions = "~=3.8"
+files = [
+    {file = "aws-cdk.integ-tests-alpha-2.150.0a0.tar.gz", hash = "sha256:9fd874a6caa4886e69f86995d4dbe8b4f6cae0776b9fdb1b420c51f8ffe35ff6"},
+    {file = "aws_cdk.integ_tests_alpha-2.150.0a0-py3-none-any.whl", hash = "sha256:2ac6b89e72998081bf670d85d8e7f9a764812dd2e3956cd78e751d7fb750a262"},
+]
+
+[package.dependencies]
+aws-cdk-lib = ">=2.150.0,<3.0.0"
+constructs = ">=10.0.0,<11.0.0"
+jsii = ">=1.101.0,<2.0.0"
+publication = ">=0.0.3"
+typeguard = ">=2.13.3,<2.14.0"
+
+[[package]]
 name = "aws-cdk-lib"
-version = "2.151.0"
+version = "2.150.0"
 description = "Version 2 of the AWS Cloud Development Kit library"
 optional = false
 python-versions = "~=3.8"
 files = [
-    {file = "aws-cdk-lib-2.151.0.tar.gz", hash = "sha256:de4e48c88cc7cc78dd7bf9552d2fb16c23b138389413ecdc339afe4d269e2b59"},
-    {file = "aws_cdk_lib-2.151.0-py3-none-any.whl", hash = "sha256:53592054de115cdd38b581b669be700232bff11855d47c1b2308abcf9d845519"},
+    {file = "aws-cdk-lib-2.150.0.tar.gz", hash = "sha256:dbf8043a84c07297bd6d7158a597ed2b4be76605e7734c7c5b8e38697bdfa138"},
+    {file = "aws_cdk_lib-2.150.0-py3-none-any.whl", hash = "sha256:300641052119988a4bdab9649c58199f45acb0ec9dfba65691075c3bc5dcad07"},
 ]
 
 [package.dependencies]
@@ -84,6 +102,45 @@ files = [
 "aws-cdk.asset-node-proxy-agent-v6" = ">=2.0.3,<3.0.0"
 constructs = ">=10.0.0,<11.0.0"
 jsii = ">=1.101.0,<2.0.0"
+publication = ">=0.0.3"
+typeguard = ">=2.13.3,<2.14.0"
+
+[[package]]
+name = "aws-solutions-constructs-aws-apigateway-lambda"
+version = "2.65.0"
+description = "CDK constructs for defining an interaction between an API Gateway and a Lambda function."
+optional = false
+python-versions = "~=3.8"
+files = [
+    {file = "aws_solutions_constructs.aws_apigateway_lambda-2.65.0-py3-none-any.whl", hash = "sha256:fe24c0b1dd4ce674acae351dfee8d1b80acea269d1c7a66b05faec6eaa4d7635"},
+    {file = "aws_solutions_constructs_aws_apigateway_lambda-2.65.0.tar.gz", hash = "sha256:3ad8d0c896c720bcc9a01fb57aeee082541227265e5168e08a3467af3393b477"},
+]
+
+[package.dependencies]
+"aws-cdk.integ-tests-alpha" = "2.150.0.a0"
+aws-cdk-lib = "2.150.0"
+"aws-solutions-constructs.core" = "2.65.0"
+constructs = ">=10.0.0,<11.0.0"
+jsii = ">=1.102.0,<2.0.0"
+publication = ">=0.0.3"
+typeguard = ">=2.13.3,<2.14.0"
+
+[[package]]
+name = "aws-solutions-constructs-core"
+version = "2.65.0"
+description = "Core CDK Construct for patterns library"
+optional = false
+python-versions = "~=3.8"
+files = [
+    {file = "aws_solutions_constructs.core-2.65.0-py3-none-any.whl", hash = "sha256:4d5fdab2edbb4583f13c392ad14d3183e3a06f9e8046a94d47c20eb144280ab6"},
+    {file = "aws_solutions_constructs_core-2.65.0.tar.gz", hash = "sha256:d1347a23cb27b3c75c8a3f73e51e449f385f4f9517fd6a5f5cb6b55ede51f99e"},
+]
+
+[package.dependencies]
+"aws-cdk.integ-tests-alpha" = "2.150.0.a0"
+aws-cdk-lib = "2.150.0"
+constructs = ">=10.0.0,<11.0.0"
+jsii = ">=1.102.0,<2.0.0"
 publication = ">=0.0.3"
 typeguard = ">=2.13.3,<2.14.0"
 
@@ -385,4 +442,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "9911f5556cd5e10abbfe3f79b7403a3495a9d137f9907b461f637123048255d1"
+content-hash = "70f96089b421bebf39f5195af80497f6a9c5ebcbc8ef48c3c9caa963328df18f"
