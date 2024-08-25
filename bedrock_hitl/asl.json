@@ -49,7 +49,7 @@
         {
           "Variable": "$.results",
           "BooleanEquals": false,
-          "Next": "Prepare Deny Event Data"
+          "Next": "Send Request Deny Event"
         },
         {
           "Variable": "$.results",
@@ -58,13 +58,6 @@
         }
       ],
       "Default": "Wait for Human Response"
-    },
-    "Prepare Deny Event Data": {
-      "Type": "Pass",
-      "Parameters": {
-        "status": "Denied"
-      },
-      "Next": "Send Request Deny Event"
     },
     "Wait for Human Response": {
       "Type": "Task",
@@ -84,22 +77,15 @@
         {
           "Variable": "$.reviewAccept",
           "BooleanEquals": true,
-          "Next": "Prepare Approve Event Data"
+          "Next": "Send Request Approve Event"
         },
         {
           "Variable": "$.reviewAccept",
           "BooleanEquals": false,
-          "Next": "Prepare Deny Event Data"
+          "Next": "Send Request Deny Event"
         }
       ],
-      "Default": "Prepare Deny Event Data"
-    },
-    "Prepare Approve Event Data": {
-      "Type": "Pass",
-      "Parameters": {
-        "status": "Approved"
-      },
-      "Next": "Send Request Approve Event"
+      "Default": "Send Request Deny Event"
     },
     "Send Request Deny Event": {
       "Type": "Task",
@@ -109,7 +95,7 @@
           {
             "Detail": {
               "request_id.$": "$$.Execution.Input.request_id",
-              "status.$": "$.status"
+              "status.$": "$.reviewAccept"
             },
             "EventBusName": "default",
             "Source": "app.request",
@@ -127,7 +113,7 @@
           {
             "Detail": {
               "request_id.$": "$$.Execution.Input.request_id",
-              "status.$": "$.status"
+              "status.$": "$.reviewAccept"
             },
             "EventBusName": "default",
             "Source": "app.request",
