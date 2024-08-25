@@ -33,4 +33,4 @@ class StepFunctions(Construct):
             definition_string=json.dumps(step_function_definition),
         )
 
-        self.state_machine_arn = state_machine.state_machine_name
+        self.state_machine_arn = state_machine.ref

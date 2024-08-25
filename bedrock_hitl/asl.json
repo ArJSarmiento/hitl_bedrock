@@ -70,7 +70,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
       "Parameters": {
-        "FunctionName": "arn:aws:lambda:REGION:ACCOUNT_ID:function:WAIT_FOR_RESPONSE_FUNCTION",
+        "FunctionName": "arn:aws:lambda:us-east-1:439420061823:function:bedrock-hitl-dev-SendHumanReview77DA807D-THoRkGwRdJ34",
         "Payload": {
           "input.$": "$",
           "token.$": "$$.Task.Token"
@@ -82,12 +82,17 @@
       "Type": "Choice",
       "Choices": [
         {
-          "Variable": "$.approval_status",
-          "StringEquals": "Approved",
+          "Variable": "$.reviewAccept",
+          "BooleanEquals": true,
+          "Next": "Prepare Approve Event Data"
+        },
+        {
+          "Variable": "$.reviewAccept",
+          "BooleanEquals": false,
           "Next": "Prepare Deny Event Data"
         }
       ],
-      "Default": "Prepare Approve Event Data"
+      "Default": "Prepare Deny Event Data"
     },
     "Prepare Approve Event Data": {
       "Type": "Pass",
